@@ -4,18 +4,18 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
     static void main(String[] args) {
-        try {
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/supermercado", "postgres", "admin");
+        String URL = "jdbc:postgresql://localhost:5432/supermercado";
+        String USER = "postgres";
+        String PASS = "admin";
 
-            if(conn != null){
-                System.out.println("Conectado com sucesso!");
-            } else {
-                System.out.println("Sem conexão!");
-            }
-        } catch (SQLException e) {
+        try {
+            Connection conn = DriverManager.getConnection(URL, USER, PASS);
+
+            ProdutoDTA produto = new ProdutoDTA(conn);
+            produto.getAll();
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
