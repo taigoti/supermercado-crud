@@ -3,19 +3,20 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionFactory {
-    static void main(String[] args) {
-        String URL = "jdbc:postgresql://localhost:5432/supermercado";
-        String USER = "postgres";
-        String PASS = "admin";
+    String URL = "jdbc:postgresql://localhost:5432/supermercado";
+    String USER = "postgres";
+    String PASS = "admin";
 
-        try {
-            Connection conn = DriverManager.getConnection(URL, USER, PASS);
+    public Connection getConnection() {
+        try{
+            return DriverManager.getConnection(URL, USER, PASS);
+        } catch (SQLException e){
+            System.out.println("Erro ao conectar com o banco de dados");
+        }
+        return null;
+    }
 
-            ProdutoDTA produto = new ProdutoDTA(conn);
-            produto.getAll();
-        }
-        catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void closeConnection(Connection conn) throws SQLException {
+        conn.close();
     }
 }
