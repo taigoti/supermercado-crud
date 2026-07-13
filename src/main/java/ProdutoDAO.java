@@ -31,23 +31,23 @@ public class ProdutoDAO {
         }
     }
 
-    public void insertProduct() {
+    public void insertProduct(String nome, double preco, int estoque, String sku) {
         String sql = "INSERT INTO produtos (nome, preco, estoque, sku) VALUES (?, ?, ?, ?)";
 
         try {
             PreparedStatement query = this.conn.prepareStatement(sql);
 
-            query.setString(1, "Xbox Series S");
-            query.setDouble(2, 3090.0);
-            query.setInt(3, 16);
-            query.setString(4, "x56");
+            query.setString(1, nome);
+            query.setDouble(2, preco);
+            query.setInt(3, estoque);
+            query.setString(4, sku);
 
             query.executeUpdate();
 
             conn.close();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao inserir produto",e);
         }
 
     }
