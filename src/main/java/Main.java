@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Main {
     static void main(String[] args) {
         ProdutoDAO produtoDAO = new ProdutoDAO();
-        insert(produtoDAO);
+        update(produtoDAO);
     }
 
     static void insert(ProdutoDAO produto) {
@@ -24,5 +24,13 @@ public class Main {
         }
 
         produto.insertProduct(nome, preco, estoque, sku);
+    }
+
+    static void update(ProdutoDAO produto) {
+        Produto p = Produto.builder()
+                .nome("Macbook")
+                .build();
+
+        produto.updateProduct(1, p);
     }
 }
