@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Main {
     static void main(String[] args) {
         ProdutoDAO produtoDAO = new ProdutoDAO();
-        update(produtoDAO);
+        produtoDAO.viewProduct(1);
     }
 
     static void insert(ProdutoDAO produto) {

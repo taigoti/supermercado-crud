@@ -3,7 +3,7 @@ import java.sql.*;
 public class ProdutoDAO {
     private Connection conn = new ConnectionFactory().getConnection();
 
-    public void viewAll() {
+    public void viewProduct() {
         try {
             PreparedStatement query = this.conn
                     .prepareStatement("SELECT * FROM produtos");
@@ -13,6 +13,35 @@ public class ProdutoDAO {
             ResultSet response = query.getResultSet();
 
             while (response.next()) {
+                Produto produto = Produto.builder()
+                        .id(response.getInt("id"))
+                        .nome(response.getString("nome"))
+                        .preco(response.getDouble("preco"))
+                        .estoque(response.getInt("estoque"))
+                        .sku(response.getString("sku"))
+                        .build();
+
+                System.out.println(produto);
+            }
+
+            conn.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void viewProduct(int id) {
+        try {
+            PreparedStatement query = this.conn
+                    .prepareStatement("SELECT * FROM produtos WHERE id = ?");
+
+            query.setInt(1, id);
+            query.execute();
+
+            ResultSet response = query.getResultSet();
+
+            if(response.next()) {
                 Produto produto = Produto.builder()
                         .id(response.getInt("id"))
                         .nome(response.getString("nome"))
