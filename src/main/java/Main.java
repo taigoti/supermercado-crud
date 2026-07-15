@@ -3,10 +3,10 @@ import java.util.Scanner;
 public class Main {
     static void main(String[] args) {
         ProdutoDAO produtoDAO = new ProdutoDAO();
-        produtoDAO.viewProduct(1);
+        produtoDAO.readProduct(1);
     }
 
-    static void insert(ProdutoDAO produto) {
+    static void create(ProdutoDAO produto) {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Digite o nome do produto: ");
@@ -23,7 +23,7 @@ public class Main {
             return;
         }
 
-        produto.insertProduct(nome, preco, estoque, sku);
+        produto.createProduct(nome, preco, estoque, sku);
     }
 
     static void update(ProdutoDAO produto) {

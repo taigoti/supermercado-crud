@@ -3,7 +3,7 @@ import java.sql.*;
 public class ProdutoDAO {
     private Connection conn = new ConnectionFactory().getConnection();
 
-    public void viewProduct() {
+    public void readProduct() {
         try {
             PreparedStatement query = this.conn
                     .prepareStatement("SELECT * FROM produtos");
@@ -31,7 +31,7 @@ public class ProdutoDAO {
         }
     }
 
-    public void viewProduct(int id) {
+    public void readProduct(int id) {
         try {
             PreparedStatement query = this.conn
                     .prepareStatement("SELECT * FROM produtos WHERE id = ?");
@@ -60,7 +60,7 @@ public class ProdutoDAO {
         }
     }
 
-    public void insertProduct(String nome, double preco, int estoque, String sku) {
+    public void createProduct(String nome, double preco, int estoque, String sku) {
         String sql = "INSERT INTO produtos (nome, preco, estoque, sku) VALUES (?, ?, ?, ?)";
 
         try {
@@ -116,6 +116,22 @@ public class ProdutoDAO {
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar produto", e);
+        }
+    }
+
+    public void deleteProduct(int id) {
+        String sql = "DELETE FROM produtos WHERE id = ?";
+
+        try (Connection conn = this.conn;
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.execute();
+
+            System.out.println("Produto deletado com sucesso!");
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao deletar produto", e);
         }
     }
 }
