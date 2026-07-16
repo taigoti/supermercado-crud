@@ -15,8 +15,4 @@ public class ConnectionFactory {
         }
         return null;
     }
-
-    public void closeConnection(Connection conn) throws SQLException {
-        conn.close();
-    }
 }

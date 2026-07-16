@@ -1,4 +1,6 @@
 import lombok.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Getter
 @Setter
@@ -12,4 +14,21 @@ public class Produto {
     private Double preco;
     private Integer estoque;
     private String sku;
+
+    public Produto buildProduto(ResultSet response) {
+        try(response) {
+            return Produto.builder()
+                    .id(response.getInt("id"))
+                    .nome(response.getString("nome"))
+                    .preco(response.getDouble("preco"))
+                    .estoque(response.getInt("estoque"))
+                    .sku(response.getString("sku"))
+                    .build();
+        }
+
+        catch (SQLException e) {
+            throw new RuntimeException("Erro no build do produto", e);
+        }
+
+    }
 }

@@ -1,120 +1,84 @@
 import java.sql.*;
 
 public class ProdutoDAO {
-    private Connection conn = new ConnectionFactory().getConnection();
+    private ConnectionFactory conn = new ConnectionFactory();
 
-    public void readProduct() {
-        try {
-            PreparedStatement query = this.conn
-                    .prepareStatement("SELECT * FROM produtos");
+    public Produto readProduct(Integer id) {
+        String sql = (id == null) ? "SELECT * FROM produtos" : "SELECT * FROM produtos WHERE id = ?";
 
-            query.execute();
-
-            ResultSet response = query.getResultSet();
-
-            while (response.next()) {
-                Produto produto = Produto.builder()
-                        .id(response.getInt("id"))
-                        .nome(response.getString("nome"))
-                        .preco(response.getDouble("preco"))
-                        .estoque(response.getInt("estoque"))
-                        .sku(response.getString("sku"))
-                        .build();
-
-                System.out.println(produto);
+        try (Connection conn = this.conn.getConnection();
+                PreparedStatement query = conn.prepareStatement(sql)) {
+            if (id != null) {
+                query.setInt(1, id);
             }
 
-            conn.close();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void readProduct(int id) {
-        try {
-            PreparedStatement query = this.conn
-                    .prepareStatement("SELECT * FROM produtos WHERE id = ?");
-
-            query.setInt(1, id);
             query.execute();
-
             ResultSet response = query.getResultSet();
 
             if(response.next()) {
-                Produto produto = Produto.builder()
-                        .id(response.getInt("id"))
-                        .nome(response.getString("nome"))
-                        .preco(response.getDouble("preco"))
-                        .estoque(response.getInt("estoque"))
-                        .sku(response.getString("sku"))
-                        .build();
+                Produto produto = new Produto();
 
-                System.out.println(produto);
+                return produto.buildProduto(response);
             }
+        }
 
-            conn.close();
-
-        } catch (SQLException e) {
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        return null;
     }
 
     public void createProduct(String nome, double preco, int estoque, String sku) {
         String sql = "INSERT INTO produtos (nome, preco, estoque, sku) VALUES (?, ?, ?, ?)";
 
-        try {
-            PreparedStatement query = this.conn.prepareStatement(sql);
-
+        try (Connection conn = this.conn.getConnection();
+             PreparedStatement query = conn.prepareStatement(sql)) {
             query.setString(1, nome);
             query.setDouble(2, preco);
             query.setInt(3, estoque);
             query.setString(4, sku);
 
             query.executeUpdate();
+        }
 
-            conn.close();
-
-        } catch (SQLException e) {
+        catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir produto",e);
         }
     }
 
     public void updateProduct(int id, Produto p) {
         String sql = "UPDATE produtos SET nome = ?, preco = ?, estoque = ?, sku = ? WHERE id = ?";
+        String selectSql = "SELECT * FROM produtos WHERE id = ?";
 
-        try (Connection conn = this.conn;
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            PreparedStatement query = this.conn
-                    .prepareStatement("SELECT * FROM produtos WHERE id = ?");
+        try (Connection conn = this.conn.getConnection();
+             PreparedStatement query = conn.prepareStatement(sql)) {
 
-            query.setInt(1, id);
-            query.execute();
+            PreparedStatement selectQuery = conn.prepareStatement(selectSql);
+            selectQuery.setInt(1, id);
+            selectQuery.execute();
 
-            ResultSet response = query.getResultSet();
+            ResultSet response = selectQuery.getResultSet();
             if(response.next()) {
-                Produto produto = Produto.builder()
-                        .nome(response.getString("nome"))
-                        .preco(response.getDouble("preco"))
-                        .estoque(response.getInt("estoque"))
-                        .sku(response.getString("sku"))
-                        .build();
+                Produto produto = new Produto();
+                produto.buildProduto(response);
 
-                stmt.setString(1, produto.getNome());
-                stmt.setDouble(2, produto.getPreco());
-                stmt.setInt(3, produto.getEstoque());
-                stmt.setString(4, produto.getSku());
-                stmt.setLong(5, 1);
+                query.setString(1, produto.getNome());
+                query.setDouble(2, produto.getPreco());
+                query.setInt(3, produto.getEstoque());
+                query.setString(4, produto.getSku());
+                query.setInt(5, id);
             }
-            if (p.getNome() != null) { stmt.setString(1, p.getNome()); }
-            if (p.getPreco() != null) { stmt.setDouble(2, p.getPreco()); }
-            if (p.getEstoque() != null) { stmt.setInt(3, p.getEstoque()); }
-            if (p.getSku() != null) { stmt.setString(4, p.getSku()); }
 
-            stmt.executeUpdate();
-            System.out.println("Produto atualizado com sucesso!");
+            if (p.getNome() != null) { query.setString(1, p.getNome()); }
+            if (p.getPreco() != null) { query.setDouble(2, p.getPreco()); }
+            if (p.getEstoque() != null) { query.setInt(3, p.getEstoque()); }
+            if (p.getSku() != null) { query.setString(4, p.getSku()); }
 
-        } catch (SQLException e) {
+            query.executeUpdate();
+        }
+
+        catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar produto", e);
         }
     }
@@ -122,15 +86,14 @@ public class ProdutoDAO {
     public void deleteProduct(int id) {
         String sql = "DELETE FROM produtos WHERE id = ?";
 
-        try (Connection conn = this.conn;
+        try (Connection conn = this.conn.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.execute();
+        }
 
-            System.out.println("Produto deletado com sucesso!");
-
-        } catch (SQLException e) {
+        catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar produto", e);
         }
     }
