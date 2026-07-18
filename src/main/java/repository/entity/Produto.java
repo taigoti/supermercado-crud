@@ -1,0 +1,35 @@
+package repository.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "produtos")
+public class Produto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "nome", nullable = false, length = 100)
+    private String nome;
+
+    @Column(name = "preco", nullable = false)
+    private Double preco;
+
+    @Column(name = "estoque",  nullable = false)
+    private Integer estoque;
+
+    @Column(name = "sku",  nullable = false)
+    private String sku;
+
+    public Produto() {}
+
+    public Produto(String nome, Double preco) {
+        this.nome = nome;
+        this.preco = preco;
+    }
+}
