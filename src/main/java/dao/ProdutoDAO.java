@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ProdutoDAO {
     private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("supermercado");
+            Persistence.createEntityManagerFactory("supermercado-pu");
 
 
     public void inserir(Produto produto) {
