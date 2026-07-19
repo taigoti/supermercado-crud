@@ -73,7 +73,7 @@ public class ProdutoDAO {
         }
     }
 
-    public void deletar(Long id) {
+    public void deletar(Integer id) {
         EntityManager em = emf.createEntityManager();
 
         try {

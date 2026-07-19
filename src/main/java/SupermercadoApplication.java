@@ -6,10 +6,11 @@ import java.util.Scanner;
 public class SupermercadoApplication {
     public static void main(String[] args) {
         ProdutoDAO dao = new ProdutoDAO();
-        escolherOperacao();
+        //escolherOperacao(dao);
+        buscarTodos(dao);
     }
 
-    static void escolherOperacao() {
+    static void escolherOperacao(ProdutoDAO dao) {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("""
@@ -19,21 +20,39 @@ public class SupermercadoApplication {
         int op = sc.nextInt();
 
         switch (op) {
-            case 1 -> inserir();
-            case 2 -> buscar();
-            case 3 -> buscarTodos();
-            case 4 -> atualizar();
-            case 5 -> deletar();
+            case 1 -> inserir(dao);
+            case 2 -> buscar(dao);
+            case 3 -> buscarTodos(dao);
+            case 4 -> atualizar(dao);
+            case 5 -> deletar(dao);
             default -> {
                 System.out.println("Digite uma operação válida!");
-                escolherOperacao();
+                escolherOperacao(dao);
             }
         }
     }
 
-    static void inserir() {}
-    static void buscar() {}
-    static void buscarTodos() {}
-    static void atualizar() {}
-    static void deletar() {}
+    static void inserir(ProdutoDAO dao) {
+        Produto novoProduto = new Produto("Filtro de Linha Clamper", 350.00, 10, "D09");
+        dao.inserir(novoProduto);
+        System.out.println("ID gerado pelo banco: " + novoProduto.getId());
+    }
+
+    static void buscar(ProdutoDAO dao) {}
+
+    static void buscarTodos(ProdutoDAO dao) {
+        List<Produto> lista = dao.buscarTodos();
+        System.out.println("Produtos no banco:");
+        lista.forEach(p -> System.out.println(p.getNome() + " - R$" + p.getPreco()));
+    }
+
+    static void atualizar(ProdutoDAO dao) {
+                // --- TESTANDO UPDATE ---
+//        novoProduto.setPreco(320.00); // Mudando o preço localmente
+//        dao.atualizar(novoProduto);    // Sincronizando com o banco
+//
+//        dao.deletar(novoProduto.getId());
+    }
+
+    static void deletar(ProdutoDAO dao) {}
 }
