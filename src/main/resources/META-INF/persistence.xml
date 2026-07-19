@@ -11,9 +11,9 @@
         <properties>
             <!-- Propriedades de Conexão com o PostgreSQL -->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5123/crud_local" />
-            <property name="jakarta.persistence.jdbc.user" value="seu_usuario" />
-            <property name="jakarta.persistence.jdbc.password" value="sua_senha" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5123/supermercado" />
+            <property name="jakarta.persistence.jdbc.user" value="postgres" />
+            <property name="jakarta.persistence.jdbc.password" value="admin" />
 
             <!-- Dialeto para o Hibernate saber como gerar o SQL específico do PostgreSQL -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
