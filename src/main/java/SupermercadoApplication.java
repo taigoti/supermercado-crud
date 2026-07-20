@@ -7,7 +7,7 @@ public class SupermercadoApplication {
     public static void main(String[] args) {
         ProdutoDAO dao = new ProdutoDAO();
         //escolherOperacao(dao);
-        buscarTodos(dao);
+        buscar(dao);
     }
 
     static void escolherOperacao(ProdutoDAO dao) {
@@ -38,7 +38,13 @@ public class SupermercadoApplication {
         System.out.println("ID gerado pelo banco: " + novoProduto.getId());
     }
 
-    static void buscar(ProdutoDAO dao) {}
+    static void buscar(ProdutoDAO dao) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Digite o id do produto: ");
+        Integer id = sc.nextInt();
+        var p = dao.buscarPorId(id);
+        System.out.println(p);
+    }
 
     static void buscarTodos(ProdutoDAO dao) {
         List<Produto> lista = dao.buscarTodos();
