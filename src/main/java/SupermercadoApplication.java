@@ -7,7 +7,8 @@ public class SupermercadoApplication {
     public static void main(String[] args) {
         ProdutoDAO dao = new ProdutoDAO();
         //escolherOperacao(dao);
-        buscar(dao);
+        inserir(dao);
+        buscarTodos(dao);
     }
 
     static void escolherOperacao(ProdutoDAO dao) {
@@ -33,7 +34,18 @@ public class SupermercadoApplication {
     }
 
     static void inserir(ProdutoDAO dao) {
-        Produto novoProduto = new Produto("Filtro de Linha Clamper", 350.00, 10, "D09");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Digite o nome do produto: ");
+        String nome = sc.nextLine();
+        System.out.println("Digite o valor do produto: ");
+        Double preco = sc.nextDouble();
+        System.out.println("Digite o estoque do produto: ");
+        Integer estoque = sc.nextInt();
+        System.out.println("Digite o SKU do produto: ");
+        String sku = sc.next();
+
+        Produto novoProduto = new Produto(nome, preco, estoque, sku);
+
         dao.inserir(novoProduto);
         System.out.println("ID gerado pelo banco: " + novoProduto.getId());
     }
