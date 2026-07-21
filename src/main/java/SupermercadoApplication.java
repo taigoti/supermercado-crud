@@ -7,7 +7,8 @@ public class SupermercadoApplication {
     public static void main(String[] args) {
         ProdutoDAO dao = new ProdutoDAO();
         //escolherOperacao(dao);
-        inserir(dao);
+        buscarTodos(dao);
+        atualizar(dao);
         buscarTodos(dao);
     }
 
@@ -65,11 +66,30 @@ public class SupermercadoApplication {
     }
 
     static void atualizar(ProdutoDAO dao) {
-                // --- TESTANDO UPDATE ---
-//        novoProduto.setPreco(320.00); // Mudando o preço localmente
-//        dao.atualizar(novoProduto);    // Sincronizando com o banco
-//
-//        dao.deletar(novoProduto.getId());
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Digite o id do produto que quer atualizar: ");
+        Integer id = sc.nextInt();
+        var p = dao.buscarPorId(id);
+
+        if(p == null) {
+            System.out.println("Não há produtos com esse ID!");
+            return; }
+        System.out.println(p);
+        System.out.println("""
+                O que quer atualizar?
+                1: Nome | 2: Preço | 3: Estoque | 4: SKU
+                """);
+
+        int op = sc.nextInt();
+        switch(op) {
+            case 1 -> p.setNome(sc.nextLine());
+            case 2 -> p.setPreco(sc.nextDouble());
+            case 3 -> p.setEstoque(sc.nextInt());
+            case 4 -> p.setSku(sc.nextLine());
+            default -> System.out.println("Digite uma opção válida!");
+        }
+
+        dao.atualizar(p);
     }
 
     static void deletar(ProdutoDAO dao) {}
