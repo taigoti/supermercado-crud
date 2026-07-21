@@ -6,17 +6,15 @@ import java.util.Scanner;
 public class SupermercadoApplication {
     public static void main(String[] args) {
         ProdutoDAO dao = new ProdutoDAO();
-        //escolherOperacao(dao);
-        buscarTodos(dao);
-        atualizar(dao);
-        buscarTodos(dao);
+
+        escolherOperacao(dao);
     }
 
     static void escolherOperacao(ProdutoDAO dao) {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("""
-                1: Inserir | 2: Buscar por Id | 3: Buscar todos | 4: Atualizar | 5: Deletar
+                1: Inserir | 2: Buscar por Id | 3: Buscar todos | 4: Atualizar | 5: Deletar | 6: Sair
                 Digite a operação que quer realizar:""");
 
         int op = sc.nextInt();
@@ -27,11 +25,17 @@ public class SupermercadoApplication {
             case 3 -> buscarTodos(dao);
             case 4 -> atualizar(dao);
             case 5 -> deletar(dao);
+            case 6 -> {
+                System.out.println("Até mais!");
+                System.exit(0);
+            }
             default -> {
                 System.out.println("Digite uma operação válida!");
                 escolherOperacao(dao);
             }
         }
+
+        escolherOperacao(dao);
     }
 
     static void inserir(ProdutoDAO dao) {
@@ -73,7 +77,9 @@ public class SupermercadoApplication {
 
         if(p == null) {
             System.out.println("Não há produtos com esse ID!");
-            return; }
+            return;
+        }
+
         System.out.println(p);
         System.out.println("""
                 O que quer atualizar?
@@ -92,5 +98,23 @@ public class SupermercadoApplication {
         dao.atualizar(p);
     }
 
-    static void deletar(ProdutoDAO dao) {}
+    static void deletar(ProdutoDAO dao) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Digite o id do produto que quer deletar: ");
+        Integer id = sc.nextInt();
+        var p = dao.buscarPorId(id);
+
+        if(p == null) {
+            System.out.println("Não há produtos com esse ID!");
+            return;
+        }
+
+        System.out.println(p);
+        System.out.println("Deseja deletar esse produto? (s/n)");
+        String wantDelete = sc.next();
+
+        if(wantDelete.equalsIgnoreCase("n")) { return; }
+
+        dao.deletar(id);
+    }
 }
