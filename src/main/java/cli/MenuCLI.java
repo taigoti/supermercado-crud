@@ -7,44 +7,44 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MenuCLI {
-    public void escolherOperacao(ProdutoDAO dao) {
-        Scanner sc = new Scanner(System.in);
+    private final ProdutoDAO dao = new ProdutoDAO();
+    private final Scanner scanner = new Scanner(System.in);
 
+    public void escolherOperacao() {
         System.out.println("""
                 1: Inserir | 2: Buscar por Id | 3: Buscar todos | 4: Atualizar | 5: Deletar | 6: Sair
                 Digite a operação que quer realizar:""");
 
-        int op = sc.nextInt();
+        int op = scanner.nextInt();
 
         switch (op) {
-            case 1 -> inserir(dao);
-            case 2 -> buscar(dao);
-            case 3 -> buscarTodos(dao);
-            case 4 -> atualizar(dao);
-            case 5 -> deletar(dao);
+            case 1 -> inserir();
+            case 2 -> buscar();
+            case 3 -> buscarTodos();
+            case 4 -> atualizar();
+            case 5 -> deletar();
             case 6 -> {
                 System.out.println("Até mais!");
                 System.exit(0);
             }
             default -> {
                 System.out.println("Digite uma operação válida!");
-                escolherOperacao(dao);
+                escolherOperacao();
             }
         }
 
-        escolherOperacao(dao);
+        escolherOperacao();
     }
 
-    public void inserir(ProdutoDAO dao) {
-        Scanner sc = new Scanner(System.in);
+    private void inserir() {
         System.out.println("Digite o nome do produto: ");
-        String nome = sc.nextLine();
+        String nome = scanner.nextLine();
         System.out.println("Digite o valor do produto: ");
-        Double preco = sc.nextDouble();
+        Double preco = scanner.nextDouble();
         System.out.println("Digite o estoque do produto: ");
-        Integer estoque = sc.nextInt();
+        Integer estoque = scanner.nextInt();
         System.out.println("Digite o SKU do produto: ");
-        String sku = sc.next();
+        String sku = scanner.next();
 
         Produto novoProduto = new Produto(nome, preco, estoque, sku);
 
@@ -52,24 +52,31 @@ public class MenuCLI {
         System.out.println("ID gerado pelo banco: " + novoProduto.getId());
     }
 
-    public void buscar(ProdutoDAO dao) {
-        Scanner sc = new Scanner(System.in);
+    private void buscar() {
         System.out.println("Digite o id do produto: ");
-        Integer id = sc.nextInt();
+        Integer id = scanner.nextInt();
+
         var p = dao.buscarPorId(id);
+
         System.out.println(p);
     }
 
-    public void buscarTodos(ProdutoDAO dao) {
+    private void buscarTodos() {
         List<Produto> lista = dao.buscarTodos();
         System.out.println("Produtos no banco:");
-        lista.forEach(p -> System.out.println(p.getNome() + " - R$" + p.getPreco()));
+
+        lista.forEach(p -> System.out.println(
+                "Id: " + p.getId() +
+                        " - Nome: " + p.getNome() +
+                        " - R$" + p.getPreco() +
+                        " - Estoque: " + p.getEstoque() +
+                        " - SKU: " + p.getSku())
+        );
     }
 
-    public void atualizar(ProdutoDAO dao) {
-        Scanner sc = new Scanner(System.in);
+    private void atualizar() {
         System.out.println("Digite o id do produto que quer atualizar: ");
-        Integer id = sc.nextInt();
+        Integer id = scanner.nextInt();
         var p = dao.buscarPorId(id);
 
         if(p == null) {
@@ -83,22 +90,21 @@ public class MenuCLI {
                 1: Nome | 2: Preço | 3: Estoque | 4: SKU
                 """);
 
-        int op = sc.nextInt();
+        int op = scanner.nextInt();
         switch(op) {
-            case 1 -> p.setNome(sc.nextLine());
-            case 2 -> p.setPreco(sc.nextDouble());
-            case 3 -> p.setEstoque(sc.nextInt());
-            case 4 -> p.setSku(sc.nextLine());
+            case 1 -> p.setNome(scanner.nextLine());
+            case 2 -> p.setPreco(scanner.nextDouble());
+            case 3 -> p.setEstoque(scanner.nextInt());
+            case 4 -> p.setSku(scanner.nextLine());
             default -> System.out.println("Digite uma opção válida!");
         }
 
         dao.atualizar(p);
     }
 
-    public void deletar(ProdutoDAO dao) {
-        Scanner sc = new Scanner(System.in);
+    private void deletar() {
         System.out.println("Digite o id do produto que quer deletar: ");
-        Integer id = sc.nextInt();
+        Integer id = scanner.nextInt();
         var p = dao.buscarPorId(id);
 
         if(p == null) {
@@ -108,7 +114,7 @@ public class MenuCLI {
 
         System.out.println(p);
         System.out.println("Deseja deletar esse produto? (s/n)");
-        String wantDelete = sc.next();
+        String wantDelete = scanner.next();
 
         if(wantDelete.equalsIgnoreCase("n")) { return; }
 
