@@ -39,17 +39,21 @@ public class MenuCLI {
     private void inserir() {
         System.out.println("Digite o nome do produto: ");
         String nome = scanner.nextLine();
+
         System.out.println("Digite o valor do produto: ");
         Double preco = scanner.nextDouble();
+
         System.out.println("Digite o estoque do produto: ");
         Integer estoque = scanner.nextInt();
+
         System.out.println("Digite o SKU do produto: ");
         String sku = scanner.next();
 
         Produto novoProduto = new Produto(nome, preco, estoque, sku);
-
         dao.inserir(novoProduto);
-        System.out.println("ID gerado pelo banco: " + novoProduto.getId());
+
+        System.out.println("Produto criado com sucesso!");
+        mostrarProduto(novoProduto);
     }
 
     private void buscar() {
@@ -58,33 +62,28 @@ public class MenuCLI {
 
         var p = dao.buscarPorId(id);
 
-        System.out.println(p);
+        mostrarProduto(p);
     }
 
     private void buscarTodos() {
         List<Produto> lista = dao.buscarTodos();
         System.out.println("Produtos no banco:");
 
-        lista.forEach(p -> System.out.println(
-                "Id: " + p.getId() +
-                        " - Nome: " + p.getNome() +
-                        " - R$" + p.getPreco() +
-                        " - Estoque: " + p.getEstoque() +
-                        " - SKU: " + p.getSku())
-        );
+        lista.forEach(this::mostrarProduto);
     }
 
     private void atualizar() {
         System.out.println("Digite o id do produto que quer atualizar: ");
         Integer id = scanner.nextInt();
-        var p = dao.buscarPorId(id);
+        var produto = dao.buscarPorId(id);
 
-        if(p == null) {
+        if(produto == null) {
             System.out.println("Não há produtos com esse ID!");
             return;
         }
 
-        System.out.println(p);
+        mostrarProduto(produto);
+
         System.out.println("""
                 O que quer atualizar?
                 1: Nome | 2: Preço | 3: Estoque | 4: SKU
@@ -92,32 +91,42 @@ public class MenuCLI {
 
         int op = scanner.nextInt();
         switch(op) {
-            case 1 -> p.setNome(scanner.nextLine());
-            case 2 -> p.setPreco(scanner.nextDouble());
-            case 3 -> p.setEstoque(scanner.nextInt());
-            case 4 -> p.setSku(scanner.nextLine());
+            case 1 -> produto.setNome(scanner.nextLine());
+            case 2 -> produto.setPreco(scanner.nextDouble());
+            case 3 -> produto.setEstoque(scanner.nextInt());
+            case 4 -> produto.setSku(scanner.nextLine());
             default -> System.out.println("Digite uma opção válida!");
         }
 
-        dao.atualizar(p);
+        dao.atualizar(produto);
     }
 
     private void deletar() {
         System.out.println("Digite o id do produto que quer deletar: ");
         Integer id = scanner.nextInt();
-        var p = dao.buscarPorId(id);
+        var produto = dao.buscarPorId(id);
 
-        if(p == null) {
+        if(produto == null) {
             System.out.println("Não há produtos com esse ID!");
             return;
         }
 
-        System.out.println(p);
+        mostrarProduto(produto);
+
         System.out.println("Deseja deletar esse produto? (s/n)");
         String wantDelete = scanner.next();
 
         if(wantDelete.equalsIgnoreCase("n")) { return; }
 
         dao.deletar(id);
+    }
+
+    private void mostrarProduto(Produto produto) {
+        System.out.println(
+                "Id: " + produto.getId() +
+                " - Nome: " + produto.getNome() +
+                " - R$" + produto.getPreco() +
+                " - Estoque: " + produto.getEstoque() +
+                " - SKU: " + produto.getSku());
     }
 }
