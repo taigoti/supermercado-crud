@@ -58,11 +58,9 @@ public class MenuCLI {
 
     private void buscar() {
         System.out.println("Digite o id do produto: ");
-        Integer id = scanner.nextInt();
+        Produto produto = buscarProduto();
 
-        var p = dao.buscarPorId(id);
-
-        mostrarProduto(p);
+        mostrarProduto(produto);
     }
 
     private void buscarTodos() {
@@ -74,13 +72,9 @@ public class MenuCLI {
 
     private void atualizar() {
         System.out.println("Digite o id do produto que quer atualizar: ");
-        Integer id = scanner.nextInt();
-        var produto = dao.buscarPorId(id);
+        Produto produto = buscarProduto();
 
-        if(produto == null) {
-            System.out.println("Não há produtos com esse ID!");
-            return;
-        }
+        if(produto == null) { return; }
 
         mostrarProduto(produto);
 
@@ -90,6 +84,7 @@ public class MenuCLI {
                 """);
 
         int op = scanner.nextInt();
+
         switch(op) {
             case 1 -> produto.setNome(scanner.nextLine());
             case 2 -> produto.setPreco(scanner.nextDouble());
@@ -103,13 +98,9 @@ public class MenuCLI {
 
     private void deletar() {
         System.out.println("Digite o id do produto que quer deletar: ");
-        Integer id = scanner.nextInt();
-        var produto = dao.buscarPorId(id);
+        Produto produto = buscarProduto();
 
-        if(produto == null) {
-            System.out.println("Não há produtos com esse ID!");
-            return;
-        }
+        if(produto == null) { return; }
 
         mostrarProduto(produto);
 
@@ -118,15 +109,30 @@ public class MenuCLI {
 
         if(wantDelete.equalsIgnoreCase("n")) { return; }
 
-        dao.deletar(id);
+        dao.deletar(produto.getId());
     }
 
     private void mostrarProduto(Produto produto) {
-        System.out.println(
-                "Id: " + produto.getId() +
-                " - Nome: " + produto.getNome() +
-                " - R$" + produto.getPreco() +
-                " - Estoque: " + produto.getEstoque() +
-                " - SKU: " + produto.getSku());
+        if(produto != null) {
+            System.out.println(
+                    "Id: " + produto.getId() +
+                    " - Nome: " + produto.getNome() +
+                    " - R$" + produto.getPreco() +
+                    " - Estoque: " + produto.getEstoque() +
+                    " - SKU: " + produto.getSku()
+            );
+        }
+    }
+
+    private Produto buscarProduto() {
+        Integer id = scanner.nextInt();
+        Produto produto = dao.buscarPorId(id);
+
+        if(produto == null) {
+            System.out.println("Não há produtos com esse ID!");
+            return null;
+        }
+
+        return produto;
     }
 }
